@@ -7,6 +7,7 @@ const url = "http://127.0.0.1:8080/"
 function App() {
   const [todo, setTodo] = useState([])
   const [textAreaContent, setTextAreaContent] = useState("")
+  const [refresh, setRefresh] = useState(0)
   useEffect(() => {
     const getTodo = async () => {
       const response = await fetch(url + "getall", {
@@ -19,7 +20,7 @@ function App() {
       setTodo(res)
     }
     getTodo()
-  }, [])
+  }, [refresh])
   const handleCreate = data => {
     const createTodo = async () => {
       const response = await fetch(url + "post", {
@@ -29,11 +30,11 @@ function App() {
           "Content-Type": 'application/json; charset=utf-8',
         },
         body: JSON.stringify({"title": textAreaContent}),
-      });
-      console.log(response.status);
-    };
-    createTodo();
-  };
+      })
+      setRefresh(Date.now())
+    }
+    createTodo()
+  }
   const handleDelete = id => {
     const deleteTodo = async () => {
       const response = await fetch(url + "delete/" + id, {
@@ -43,10 +44,10 @@ function App() {
           "Content-Type": 'application/json; charset=utf-8',
         },
         body: JSON.stringify({"id": id}),
-      });
-      console.log(response.status);
-    };
-    deleteTodo();
+      })
+      setRefresh(Date.now())
+    }
+    deleteTodo()
   };
   return (
     <div className="App">
